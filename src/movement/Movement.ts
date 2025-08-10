@@ -498,20 +498,18 @@ export class Movement {
 
 	/* Moves onto an exit tile */
 	static moveOnExit(creep: Zerg): ScreepsReturnCode | undefined {
-		if (creep.pos.rangeToEdge > 0 && creep.fatigue == 0) {
-			let directions = [1, 3, 5, 7, 2, 4, 6, 8] as DirectionConstant[];
-			for (let direction of directions) {
-				let position = creep.pos.getPositionAtDirection(direction);
-				let terrain = position.lookFor(LOOK_TERRAIN)[0];
-				if (terrain != 'wall' && position.rangeToEdge == 0) {
-					let outcome = creep.move(direction);
-					return outcome;
-				}
-			}
-			log.warning(`moveOnExit() assumes nearby exit tile, position: ${creep.pos}`);
-			return ERR_NO_PATH;
-		}
-	}
+               if (creep.pos.rangeToEdge > 0 && creep.fatigue == 0) {
+                       let directions = [1, 3, 5, 7, 2, 4, 6, 8] as DirectionConstant[];
+                       for (let direction of directions) {
+                               let position = creep.pos.getPositionAtDirection(direction);
+                               if (position.rangeToEdge == 0 && position.isWalkable()) {
+                                       return creep.move(direction);
+                               }
+                       }
+                       log.warning(`moveOnExit() assumes nearby exit tile, position: ${creep.pos}`);
+                       return ERR_NO_PATH;
+               }
+       }
 
 	/* Moves off of an exit tile */
 	static moveOffExit(creep: Zerg, avoidSwamp = true): ScreepsReturnCode {
